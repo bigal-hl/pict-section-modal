@@ -2,7 +2,10 @@
  * Unit tests for Pict-Section-Modal
  */
 const libBrowserEnv = require('browser-env');
-libBrowserEnv();
+// `url` keeps the jsdom origin non-opaque so localStorage is reachable
+// for the Shell tests (which run in the same suite). Without it a
+// SecurityError fires on every localStorage access.
+libBrowserEnv({ url: 'http://localhost/' });
 
 const Chai = require('chai');
 const Expect = Chai.expect;

@@ -7,6 +7,7 @@ const libPictModalToast = require('./Pict-Modal-Toast.js');
 const libPictModalTooltip = require('./Pict-Modal-Tooltip.js');
 const libPictModalPanel = require('./Pict-Modal-Panel.js');
 const libPictModalDropdown = require('./Pict-Modal-Dropdown.js');
+const libPictModalShell = require('./Pict-Modal-Shell.js');
 
 const _DefaultConfiguration = require('./Pict-Section-Modal-DefaultConfiguration.js');
 
@@ -30,6 +31,7 @@ class PictSectionModal extends libPictViewClass
 		this._tooltip = new libPictModalTooltip(this);
 		this._panel = new libPictModalPanel(this);
 		this._dropdown = new libPictModalDropdown(this);
+		this._shell = new libPictModalShell(this);
 	}
 
 	onBeforeInitialize()
@@ -180,6 +182,27 @@ class PictSectionModal extends libPictViewClass
 	panel(pTargetSelector, pOptions)
 	{
 		return this._panel.create(pTargetSelector, pOptions);
+	}
+
+	// -- Shell API --
+
+	/**
+	 * Get (or create) a layout shell for a viewport. Idempotent.
+	 *
+	 * The shell takes ownership of the viewport's contents and manages
+	 * top / right / bottom / left panel placement plus a center area.
+	 * See Pict-Modal-Shell.js for full panel-config semantics.
+	 *
+	 * @param {string|HTMLElement} pViewport - selector or element of the
+	 *   container the shell should fill (commonly the app's root div).
+	 * @param {object} [pOptions]
+	 * @param {boolean} [pOptions.Persistence=true]   - autosave panel state to localStorage
+	 * @param {string}  [pOptions.PersistenceKey=null]- override scope (default: hostname)
+	 * @returns {PictModalShell}
+	 */
+	shell(pViewport, pOptions)
+	{
+		return this._shell.shell(pViewport, pOptions);
 	}
 
 	// -- Cleanup API --

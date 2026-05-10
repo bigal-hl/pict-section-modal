@@ -767,5 +767,397 @@ module.exports = (
 	overflow: visible;
 	background: var(--pict-panel-bg, #FAF8F4);
 }
+
+/* ───────────────────────────────────────────────────────────────────
+ *  Pict-Modal-Shell — viewport-managing layout for top / right /
+ *  bottom / left panels around a center.
+ * ───────────────────────────────────────────────────────────────── */
+
+.pict-modal-shell-host { display: block; height: 100%; min-height: 0; }
+.pict-modal-shell
+{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	min-height: 0;
+	position: relative;
+	color: var(--pict-modal-fg, var(--theme-color-text-primary, #1a1a1a));
+	background: var(--theme-color-background-primary, transparent);
+}
+.pict-modal-shell-row { display: flex; min-width: 0; min-height: 0; }
+/* "First added = at the edge" convention is held by reversing the
+   flex-direction on the bottom row + right side. That way, for ALL
+   four sides, calling addPanel() N times stacks panel #1 against
+   the viewport edge, panel #2 just inside it, panel #3 further in,
+   and so on. Without these reverses, top + left worked that way but
+   bottom + right inverted (first-added at content side, last-added
+   at edge), which surprised callers. */
+.pict-modal-shell-row-top    { flex: 0 0 auto; flex-direction: column; }
+.pict-modal-shell-row-bottom { flex: 0 0 auto; flex-direction: column-reverse; }
+.pict-modal-shell-row-middle
+{
+	flex: 1 1 0;
+	flex-direction: row;
+	min-height: 0;
+	position: relative;
+}
+.pict-modal-shell-side
+{
+	display: flex;
+	flex: 0 0 auto;
+	min-height: 0;
+}
+.pict-modal-shell-side-left  { flex-direction: row; }
+.pict-modal-shell-side-right { flex-direction: row-reverse; }
+.pict-modal-shell-center
+{
+	flex: 1 1 0;
+	min-width: 0;
+	min-height: 0;
+	overflow: auto;
+	position: relative;
+}
+.pict-modal-shell-center-content
+{
+	min-height: 100%;
+}
+
+/* Panels — base */
+.pict-modal-shell-panel
+{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	background: var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff));
+	color: inherit;
+	min-width: 0;
+	min-height: 0;
+	transition: width 140ms ease, height 140ms ease;
+}
+.pict-modal-shell-panel-content
+{
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+	overflow: auto;
+}
+.pict-modal-shell-panel-content-inner
+{
+	min-height: 100%;
+}
+/* Panel boundary — fixed-mode panels get a hairline border for explicit
+   demarcation. Collapsible / resizable panels DROP the boundary border
+   (background contrast separates them from the center anyway) so the
+   collapse tab can pull out cleanly without a hairline cutting across
+   it. The host stylesheet still gets full control via the panel's own
+   background. */
+.pict-modal-shell-panel-mode-fixed.pict-modal-shell-panel-top    { border-bottom: 1px solid var(--pict-modal-border, var(--theme-color-border-default, #e0e0e0)); }
+.pict-modal-shell-panel-mode-fixed.pict-modal-shell-panel-bottom { border-top:    1px solid var(--pict-modal-border, var(--theme-color-border-default, #e0e0e0)); }
+.pict-modal-shell-panel-mode-fixed.pict-modal-shell-panel-left   { border-right:  1px solid var(--pict-modal-border, var(--theme-color-border-default, #e0e0e0)); }
+.pict-modal-shell-panel-mode-fixed.pict-modal-shell-panel-right  { border-left:   1px solid var(--pict-modal-border, var(--theme-color-border-default, #e0e0e0)); }
+
+/* Resize handle — absolute on the inner edge of each panel. */
+.pict-modal-shell-panel-resize-handle
+{
+	position: absolute;
+	background: transparent;
+	z-index: 5;
+	transition: background-color 120ms ease;
+}
+/* Resize handle hover — use the active brand's mode-aware primary
+   color (set by pict-section-theme's Brand provider as
+   --brand-color-primary-mode) so the resize affordance picks up the
+   app's wordmark color. Falls back to the theme's brand-primary
+   token if no brand is registered. */
+.pict-modal-shell-panel-resize-handle:hover
+{
+	background: var(--brand-color-primary-mode, var(--theme-color-brand-primary, #2563eb));
+	opacity: 0.4;
+}
+.pict-modal-shell-panel-left   .pict-modal-shell-panel-resize-handle { right: -3px; top: 0; bottom: 0; width: 6px; cursor: col-resize; }
+.pict-modal-shell-panel-right  .pict-modal-shell-panel-resize-handle { left:  -3px; top: 0; bottom: 0; width: 6px; cursor: col-resize; }
+.pict-modal-shell-panel-top    .pict-modal-shell-panel-resize-handle { bottom:-3px; left: 0; right: 0; height: 6px; cursor: row-resize; }
+.pict-modal-shell-panel-bottom .pict-modal-shell-panel-resize-handle { top:   -3px; left: 0; right: 0; height: 6px; cursor: row-resize; }
+
+/* Collapse tab — slim sliver flush on the panel's OUTER boundary
+   (where the resize handle sits), modelled on retold-content-system's
+   sidebar tab. At rest it's a 6×28 px sliver; hover expands to
+   18×36 px without overlapping the panel's own content. The tab is
+   positioned with its center on the boundary so half pokes into the
+   adjacent area — the only place we can safely take over without
+   stepping on app UI inside the panel. Title text only renders in the
+   collapsed state where there's room for it. */
+.pict-modal-shell-panel-collapse-tab
+{
+	position: absolute;
+	display: flex;            /* not inline-flex — avoids baseline alignment quirks */
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	border: 1px solid var(--pict-modal-border, var(--theme-color-border-default, #d0d7de));
+	background: var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff));
+	color: var(--theme-color-text-muted, #6b7280);
+	font: inherit;
+	font-size: 10px;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	cursor: pointer;
+	z-index: 50;
+	opacity: 0.55;
+	padding: 0;
+	box-sizing: border-box;
+	line-height: 0;          /* keep child boxes from inflating around the rotated chevron */
+	transition: opacity 160ms ease, width 160ms ease, height 160ms ease,
+	            background-color 160ms ease, color 160ms ease,
+	            border-color 160ms ease, box-shadow 160ms ease;
+}
+/* Hover state pulls accent color from the active brand (mode-aware,
+   so it's legible in both light + dark) with theme brand-primary as
+   fallback. The whole point of brand colors is that they show up
+   across the app's chrome. */
+.pict-modal-shell-panel-collapse-tab:hover,
+.pict-modal-shell-panel:hover > .pict-modal-shell-panel-collapse-tab
+{
+	opacity: 1;
+	color:        var(--brand-color-primary-mode, var(--theme-color-brand-primary, #2563eb));
+	border-color: var(--brand-color-primary-mode, var(--theme-color-brand-primary, #2563eb));
+}
+/* Drop shadow casts AWAY from the panel so the tab feels pulled out
+   (extension of the panel) rather than floating across the boundary. */
+.pict-modal-shell-panel-left:hover    > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-left    > .pict-modal-shell-panel-collapse-tab:hover    { box-shadow:  3px 0 6px -2px rgba(0, 0, 0, 0.18); }
+.pict-modal-shell-panel-right:hover   > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-right   > .pict-modal-shell-panel-collapse-tab:hover   { box-shadow: -3px 0 6px -2px rgba(0, 0, 0, 0.18); }
+.pict-modal-shell-panel-top:hover     > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-top     > .pict-modal-shell-panel-collapse-tab:hover     { box-shadow:  0 3px 6px -2px rgba(0, 0, 0, 0.18); }
+.pict-modal-shell-panel-bottom:hover  > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-bottom  > .pict-modal-shell-panel-collapse-tab:hover  { box-shadow:  0 -3px 6px -2px rgba(0, 0, 0, 0.18); }
+
+/* Side panels: slim VERTICAL sliver pulled OUT of the panel's outer
+   boundary like a drawer tab. The inner edge is anchored AT the panel
+   boundary (with a 1px overlap so the tab visually merges with the
+   panel's own background — no hairline gap). The tab grows OUTWARD
+   only on hover; the inner edge stays put so the tab always looks
+   like an extension of the panel rather than a floating button.
+   Border-left is removed for left panels (and border-right for right
+   panels) so the panel-facing edge is open. */
+.pict-modal-shell-panel-left  > .pict-modal-shell-panel-collapse-tab
+{
+	/* width 6, right: -5px → tab spans (panelRight - 1) to (panelRight + 5).
+	   The 1px overlap into the panel is what makes it look attached. */
+	right: -5px; top: 14px; width: 6px; height: 28px;
+	border-radius: 0 4px 4px 0;
+	border-left: 0;
+}
+.pict-modal-shell-panel-right > .pict-modal-shell-panel-collapse-tab
+{
+	left:  -5px; top: 14px; width: 6px; height: 28px;
+	border-radius: 4px 0 0 4px;
+	border-right: 0;
+}
+/* Hover: same inner anchor (panelRight - 1), tab grows outward to
+   width 18 → right: -17px. Top + height grow downward only (top
+   stays, height extends so the tab visually 'drops' the chevron
+   into view). */
+.pict-modal-shell-panel-left:hover  > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-left  > .pict-modal-shell-panel-collapse-tab:hover
+{
+	width: 18px; height: 36px; right: -17px;
+}
+.pict-modal-shell-panel-right:hover > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-right > .pict-modal-shell-panel-collapse-tab:hover
+{
+	width: 18px; height: 36px; left: -17px;
+}
+
+/* Top / bottom panels: slim HORIZONTAL sliver pulled OUT of the
+   horizontal boundary, anchored 14 px in from the right.  Same
+   inner-edge-anchored / 1 px overlap pattern as the side panels. */
+.pict-modal-shell-panel-top    > .pict-modal-shell-panel-collapse-tab
+{
+	bottom: -5px; right: 14px; width: 28px; height: 6px;
+	border-radius: 0 0 4px 4px;
+	border-top: 0;
+}
+.pict-modal-shell-panel-bottom > .pict-modal-shell-panel-collapse-tab
+{
+	top:    -5px; right: 14px; width: 28px; height: 6px;
+	border-radius: 4px 4px 0 0;
+	border-bottom: 0;
+}
+.pict-modal-shell-panel-top:hover    > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-top    > .pict-modal-shell-panel-collapse-tab:hover
+{
+	width: 36px; height: 18px; bottom: -17px;
+}
+.pict-modal-shell-panel-bottom:hover > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-bottom > .pict-modal-shell-panel-collapse-tab:hover
+{
+	width: 36px; height: 18px; top: -17px;
+}
+
+.pict-modal-shell-panel-collapse-tab-title { display: none; white-space: nowrap; }
+
+/* Auto-generated chevron glyph inside the tab — only visible once the
+   tab is wide / tall enough to show it (i.e. hover state, or when the
+   panel is collapsed). Direction follows side + state.
+   Sized 5×5 (down from 6) so even with rotation the visual stays
+   well clear of the tab's overflow:hidden bounds at 18×36 hover and
+   the 24px collapsed tab strip width. flex-shrink:0 ensures the
+   pseudo never collapses to zero in tight tab dimensions. */
+.pict-modal-shell-panel-collapse-tab::before
+{
+	content: '';
+	display: block;
+	width: 5px; height: 5px;
+	flex-shrink: 0;
+	opacity: 0;
+	border-right: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
+	transform: rotate(135deg);
+	transform-origin: center center;
+	transition: opacity 160ms ease, transform 160ms ease;
+}
+.pict-modal-shell-panel:hover > .pict-modal-shell-panel-collapse-tab::before,
+.pict-modal-shell-panel-collapse-tab:hover::before,
+.pict-modal-shell-panel-collapsed > .pict-modal-shell-panel-collapse-tab::before
+{
+	opacity: 1;
+}
+.pict-modal-shell-panel-right                                       > .pict-modal-shell-panel-collapse-tab::before { transform: rotate(-45deg); }
+.pict-modal-shell-panel-top                                         > .pict-modal-shell-panel-collapse-tab::before { transform: rotate(-135deg); }
+.pict-modal-shell-panel-bottom                                      > .pict-modal-shell-panel-collapse-tab::before { transform: rotate(45deg); }
+.pict-modal-shell-panel-left.pict-modal-shell-panel-collapsed       > .pict-modal-shell-panel-collapse-tab::before { transform: rotate(-45deg); }
+.pict-modal-shell-panel-right.pict-modal-shell-panel-collapsed      > .pict-modal-shell-panel-collapse-tab::before { transform: rotate(135deg); }
+.pict-modal-shell-panel-top.pict-modal-shell-panel-collapsed        > .pict-modal-shell-panel-collapse-tab::before { transform: rotate(45deg); }
+.pict-modal-shell-panel-bottom.pict-modal-shell-panel-collapsed     > .pict-modal-shell-panel-collapse-tab::before { transform: rotate(-135deg); }
+
+/* Collapsed state — content disappears, only the collapse tab remains. */
+.pict-modal-shell-panel-collapsed > .pict-modal-shell-panel-content
+{
+	display: none;
+}
+.pict-modal-shell-panel-collapsed > .pict-modal-shell-panel-resize-handle
+{
+	display: none;
+}
+.pict-modal-shell-panel-left.pict-modal-shell-panel-collapsed,
+.pict-modal-shell-panel-right.pict-modal-shell-panel-collapsed
+{
+	/* When collapsed, side panels rotate the title for vertical reading. */
+	overflow: hidden;
+}
+/* When collapsed: the entire panel becomes the tab strip — full width
+   for sides, full height for top/bottom — with the title visible
+   vertically (sides) or horizontally (top/bottom). The little sliver
+   tab on the boundary disappears (we don't need it anymore — clicking
+   anywhere on the panel toggles it back open). */
+.pict-modal-shell-panel-left.pict-modal-shell-panel-collapsed,
+.pict-modal-shell-panel-right.pict-modal-shell-panel-collapsed,
+.pict-modal-shell-panel-top.pict-modal-shell-panel-collapsed,
+.pict-modal-shell-panel-bottom.pict-modal-shell-panel-collapsed
+{
+	overflow: hidden;
+}
+.pict-modal-shell-panel-collapsed > .pict-modal-shell-panel-collapse-tab
+{
+	/* Promote the tab to FILL the collapsed panel (not just hug its
+	   content) so the centered chevron + title group sits in the middle
+	   of the panel. Without explicit width/height: 100%, the position:
+	   absolute element shrinks to its natural content size and the
+	   group ends up flush at the top of the panel — where the chevron
+	   gets clipped by the topbar. */
+	position: absolute !important;
+	top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	opacity: 0.85;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 4px;        /* keeps chevron + title clear of edges */
+	box-shadow: none;
+	color: var(--theme-color-text-muted, #6b7280);
+	box-sizing: border-box;
+	overflow: hidden;
+}
+.pict-modal-shell-panel-collapsed > .pict-modal-shell-panel-collapse-tab:hover
+{
+	background: var(--theme-color-background-hover, var(--pict-modal-bg, #fff));
+	color: var(--brand-color-primary-mode, var(--theme-color-brand-primary, #2563eb));
+	box-shadow: none;
+}
+/* Side panels (collapsed): rotate the title for vertical reading. */
+.pict-modal-shell-panel-left.pict-modal-shell-panel-collapsed   > .pict-modal-shell-panel-collapse-tab,
+.pict-modal-shell-panel-right.pict-modal-shell-panel-collapsed  > .pict-modal-shell-panel-collapse-tab
+{
+	writing-mode: vertical-rl;
+	text-orientation: mixed;
+}
+.pict-modal-shell-panel-collapsed .pict-modal-shell-panel-collapse-tab-title
+{
+	display: inline;
+}
+
+/* Overlay panels — float over the middle row instead of taking layout
+   space. The overlay layer is positioned absolutely inside the middle
+   row; individual overlay panels stack with positive z-index. */
+.pict-modal-shell-overlay-layer
+{
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 10;
+}
+.pict-modal-shell-overlay-layer .pict-modal-shell-panel
+{
+	pointer-events: auto;
+	position: absolute;
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+}
+.pict-modal-shell-overlay-layer .pict-modal-shell-panel-left   { left:   0; top: 0; bottom: 0; }
+.pict-modal-shell-overlay-layer .pict-modal-shell-panel-right  { right:  0; top: 0; bottom: 0; }
+.pict-modal-shell-overlay-layer .pict-modal-shell-panel-top    { top:    0; left: 0; right: 0; }
+.pict-modal-shell-overlay-layer .pict-modal-shell-panel-bottom { bottom: 0; left: 0; right: 0; }
+
+/* Drag-active state — disable text selection + change cursor globally
+   so resize feels solid even when the cursor briefly leaves the handle. */
+.pict-modal-shell-dragging-x, .pict-modal-shell-dragging-y { user-select: none; }
+.pict-modal-shell-dragging-x * { cursor: col-resize !important; }
+.pict-modal-shell-dragging-y * { cursor: row-resize !important; }
+
+/* Per-panel resize-active state — kills the panel's collapse/expand
+   width/height transition for the duration of a drag. Without this,
+   every pointermove starts a fresh 140 ms transition and the resize
+   visibly lags behind the cursor ("choppy"). With it disabled the
+   panel snaps to the new size on the same frame as the pointer, which
+   feels native. */
+.pict-modal-shell-panel-resizing { transition: none !important; }
+.pict-modal-shell-panel-resizing > .pict-modal-shell-panel-resize-handle
+{
+	background: var(--brand-color-primary-mode, var(--theme-color-brand-primary, #2563eb));
+	opacity: 0.5;
+}
+
+/* Panel popup-attention flash — fires when popup() is called on an
+   already-open panel. Brief brand-colored inset glow so the user sees
+   that their click landed even though the panel didn't change shape.
+   Class is added by the shell, auto-removed after ~700 ms. */
+@keyframes pict-modal-shell-panel-flash
+{
+	0%   { box-shadow: inset 0 0 0 0 transparent; }
+	30%  { box-shadow: inset 0 0 0 3px var(--brand-color-primary-mode, var(--theme-color-brand-primary, #2563eb)); }
+	100% { box-shadow: inset 0 0 0 0 transparent; }
+}
+.pict-modal-shell-panel-flash
+{
+	animation: pict-modal-shell-panel-flash 600ms ease-out;
+}
 `
 });
