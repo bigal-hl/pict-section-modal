@@ -110,7 +110,7 @@ The fastest path:
    `package.json` under `retold.brand`, see
    `pict-section-theme/README.md`.)
 3. Edit `themes/acme-default.json` with your theme tokens, or delete
-   it entirely and pass `ApplyDefault: 'retold-default'` (or any
+   it entirely and pass `ApplyDefault: 'pict-default'` (or any
    other bundled theme hash) to start.
 4. Rename the routes + page views.
 5. Decide what your sidebar (if any) contains; or drop it entirely.

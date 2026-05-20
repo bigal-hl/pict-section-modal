@@ -1,6 +1,6 @@
 {
 	"name": "pict-section-modal",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Pict modal section -- confirmations, tooltips, toast notifications, floating modal windows, and viewport-managing layout shells with collapsible / resizable / overlay panels",
 	"main": "source/Pict-Section-Modal.js",
 	"scripts": {
@@ -23,8 +23,8 @@
 	"homepage": "https://github.com/stevenvelozo/pict-section-modal#readme",
 	"devDependencies": {
 		"browser-env": "^3.3.0",
-		"pict": "^1.0.368",
-		"pict-docuserve": "^1.0.1",
+		"pict": "^1.0.369",
+		"pict-docuserve": "^1.3.2",
 		"quackage": "^1.2.3"
 	},
 	"mocha": {

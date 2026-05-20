@@ -13,7 +13,7 @@
  *      themes/acme-default.json is registered with the theme catalog
  *      before the section is added, then passed as `ApplyDefault` so
  *      it boots up active on first load. Out of the box you get every
- *      bundled theme too (retold-default, twilight, synthwave, …) —
+ *      bundled theme too (pict-default, twilight, synthwave, …) —
  *      they show up in the picker alongside Acme's own.
  *
  *   3. RESPONSIVE SHELL CHROME
