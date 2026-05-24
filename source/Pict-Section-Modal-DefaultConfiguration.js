@@ -973,105 +973,94 @@ module.exports = (
 }
 /* Drop shadow casts AWAY from the panel so the tab feels pulled out
    (extension of the panel) rather than floating across the boundary.
-   The first shadow value is the merge-bar (panel-bg colored, offset
-   INTO the panel) which has to be repeated here so the hover override
-   doesn't drop it. */
+   The tab itself is now positioned fully OUTSIDE the panel boundary
+   (see the per-side rules below), so we don't need a merge-bar shadow
+   to mask any in-panel overlap — only the drop shadow remains. */
 .pict-modal-shell-panel-left:hover    > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-left    > .pict-modal-shell-panel-collapse-tab:hover
 {
-	box-shadow:
-		calc(-1 * var(--pict-modal-collapse-tab-merge)) 0 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff)),
-		3px 0 6px -2px rgba(0, 0, 0, 0.18);
+	box-shadow: 3px 0 6px -2px rgba(0, 0, 0, 0.18);
 }
 .pict-modal-shell-panel-right:hover   > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-right   > .pict-modal-shell-panel-collapse-tab:hover
 {
-	box-shadow:
-		var(--pict-modal-collapse-tab-merge) 0 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff)),
-		-3px 0 6px -2px rgba(0, 0, 0, 0.18);
+	box-shadow: -3px 0 6px -2px rgba(0, 0, 0, 0.18);
 }
 .pict-modal-shell-panel-top:hover     > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-top     > .pict-modal-shell-panel-collapse-tab:hover
 {
-	box-shadow:
-		0 calc(-1 * var(--pict-modal-collapse-tab-merge)) 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff)),
-		0 3px 6px -2px rgba(0, 0, 0, 0.18);
+	box-shadow: 0 3px 6px -2px rgba(0, 0, 0, 0.18);
 }
 .pict-modal-shell-panel-bottom:hover  > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-bottom  > .pict-modal-shell-panel-collapse-tab:hover
 {
-	box-shadow:
-		0 var(--pict-modal-collapse-tab-merge) 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff)),
-		0 -3px 6px -2px rgba(0, 0, 0, 0.18);
+	box-shadow: 0 -3px 6px -2px rgba(0, 0, 0, 0.18);
 }
 
-/* Side panels: slim VERTICAL sliver pulled OUT of the panel's outer
-   boundary like a drawer tab. The geometric inner edge sits 1px
-   INSIDE the panel boundary, and the merge-bar box-shadow paints
-   another --pict-modal-collapse-tab-merge px of panel-bg color past
-   it INTO the panel — together they mask any 1px theme border on an
-   inner element, content padding offset, or resize-handle hover bleed
-   that would otherwise leak between the tab and the panel content.
-   The tab grows OUTWARD only on hover; the inner edge stays put so
-   the tab always looks like an extension of the panel rather than a
-   floating button. Border-left is removed for left panels (and
-   border-right for right panels) so the panel-facing edge is open. */
+/* Per-side base positioning — the tab lives entirely OUTSIDE the
+   panel's outer boundary.  Its panel-facing edge touches the boundary
+   (offset = -tabThickness) and the rest of the tab pokes out into the
+   adjacent area (center / sibling panel).  Border on the panel-facing
+   edge is dropped so the tab looks attached to the panel rather than
+   floating beside it.
+   Why fully-outside?  Earlier iterations had the tab straddling the
+   boundary (1px inside + 4px outside) with a panel-bg-colored merge-bar
+   masking the in-panel half — that worked geometrically but visually
+   read as "tab pinned into the panel," and any rendering inside the
+   panel (especially custom borders or hover bleeds) could clip against
+   the in-panel half.  Fully-external positioning eliminates the overlap
+   class of bugs and lets the tab live entirely in the adjacent area
+   where there's no app content to step on. */
 .pict-modal-shell-panel-left  > .pict-modal-shell-panel-collapse-tab
 {
-	right: -5px; top: 14px; width: 6px; height: 28px;
+	right: -6px; top: 14px; width: 6px; height: 28px;
 	border-radius: 0 4px 4px 0;
 	border-left: 0;
-	box-shadow: calc(-1 * var(--pict-modal-collapse-tab-merge)) 0 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff));
 }
 .pict-modal-shell-panel-right > .pict-modal-shell-panel-collapse-tab
 {
-	left:  -5px; top: 14px; width: 6px; height: 28px;
+	left:  -6px; top: 14px; width: 6px; height: 28px;
 	border-radius: 4px 0 0 4px;
 	border-right: 0;
-	box-shadow: var(--pict-modal-collapse-tab-merge) 0 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff));
 }
-/* Hover: same inner anchor (panelRight - 1), tab grows outward to
-   width 18 → right: -17px. Top + height grow downward only (top
-   stays, height extends so the tab visually 'drops' the chevron
-   into view). */
+.pict-modal-shell-panel-top    > .pict-modal-shell-panel-collapse-tab
+{
+	bottom: -6px; right: 14px; width: 28px; height: 6px;
+	border-radius: 0 0 4px 4px;
+	border-top: 0;
+}
+.pict-modal-shell-panel-bottom > .pict-modal-shell-panel-collapse-tab
+{
+	top:    -6px; right: 14px; width: 28px; height: 6px;
+	border-radius: 4px 4px 0 0;
+	border-bottom: 0;
+}
+
+/* Hover: tab grows OUTWARD into the adjacent area.  The panel-facing
+   edge stays glued to the boundary (offset = -tabThickness), so the
+   tab still looks attached on hover — only its outer dimension grows.
+   For side panels the height also grows (28 → 36) downward; for top
+   /bottom panels the width grows (28 → 36) — see the next block for
+   the perpendicular-axis offsets. */
 .pict-modal-shell-panel-left:hover  > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-left  > .pict-modal-shell-panel-collapse-tab:hover
 {
-	width: 18px; height: 36px; right: -17px;
+	width: 18px; height: 36px; right: -18px;
 }
 .pict-modal-shell-panel-right:hover > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-right > .pict-modal-shell-panel-collapse-tab:hover
 {
-	width: 18px; height: 36px; left: -17px;
-}
-
-/* Top / bottom panels: slim HORIZONTAL sliver pulled OUT of the
-   horizontal boundary, anchored 14 px in from the right. Same
-   inner-edge-anchored + merge-bar pattern as the side panels — the
-   merge-bar offsets vertically instead of horizontally. */
-.pict-modal-shell-panel-top    > .pict-modal-shell-panel-collapse-tab
-{
-	bottom: -5px; right: 14px; width: 28px; height: 6px;
-	border-radius: 0 0 4px 4px;
-	border-top: 0;
-	box-shadow: 0 calc(-1 * var(--pict-modal-collapse-tab-merge)) 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff));
-}
-.pict-modal-shell-panel-bottom > .pict-modal-shell-panel-collapse-tab
-{
-	top:    -5px; right: 14px; width: 28px; height: 6px;
-	border-radius: 4px 4px 0 0;
-	border-bottom: 0;
-	box-shadow: 0 var(--pict-modal-collapse-tab-merge) 0 0 var(--pict-modal-bg, var(--theme-color-background-panel, #ffffff));
+	width: 18px; height: 36px; left: -18px;
 }
 .pict-modal-shell-panel-top:hover    > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-top    > .pict-modal-shell-panel-collapse-tab:hover
 {
-	width: 36px; height: 18px; bottom: -17px;
+	width: 36px; height: 18px; bottom: -18px;
 }
 .pict-modal-shell-panel-bottom:hover > .pict-modal-shell-panel-collapse-tab,
 .pict-modal-shell-panel-bottom > .pict-modal-shell-panel-collapse-tab:hover
 {
-	width: 36px; height: 18px; top: -17px;
+	width: 36px; height: 18px; top: -18px;
 }
 
 .pict-modal-shell-panel-collapse-tab-title { display: none; white-space: nowrap; }
