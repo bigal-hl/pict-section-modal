@@ -1,0 +1,39 @@
+{
+	"name": "pict-section-modal-example-panel-garden",
+	"version": "0.0.1",
+	"description": "Panel Garden — visual test-bed for the shell()/addPanel() collapse-tab geometry: all four sides × multiple thicknesses × middle/corner tab positions × theme switching.",
+	"main": "source/Pict-Application-PanelGarden.js",
+	"scripts": {
+		"start": "echo 'open dist/index.html after npm run build'",
+		"build": "npx quack build && npx quack copy",
+		"test": "echo \"no tests\" && exit 0"
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"dependencies": {
+		"pict": "^1.0.367",
+		"pict-application": "^1.0.34",
+		"pict-section-modal": "file:../../",
+		"pict-section-theme": "file:../../../pict-section-theme",
+		"pict-view": "^1.0.68"
+	},
+	"devDependencies": {
+		"quackage": "^1.1.2"
+	},
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{ "from": "./html/*", "to": "./dist/" },
+		{ "from": "./css/**", "to": "./dist/css/" },
+		{ "from": "./node_modules/pict/dist/*", "to": "./dist/js/" }
+	],
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Panel Garden",
+			"Summary": "Visual test-bed for the shell()/addPanel() collapse-tab geometry — every side, multiple thicknesses, corner vs middle anchoring, with live theme switching.",
+			"Complexity": "Advanced"
+		}
+	}
+}
