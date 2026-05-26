@@ -1,7 +1,7 @@
 {
-	"Generated": "2026-05-23T01:48:36.292Z",
+	"Generated": "2026-05-26T18:24:28.276Z",
 	"Mode": "module",
-	"GitHubOrg": "stevenvelozo",
+	"GitHubOrg": "fable-retold",
 	"DefaultBranch": "master",
 	"Module": {
 		"Name": "pict-section-modal",
@@ -151,6 +151,9 @@
 			"examples/modal_garden/README.md",
 			"examples/modal_garden/index.html",
 			"examples/modal_garden/pict-section-modal-example-modal-garden.compatible.min.js",
+			"examples/panel_garden/README.md",
+			"examples/panel_garden/index.html",
+			"examples/panel_garden/pict-section-modal-example-panel-garden.compatible.min.js",
 			"index.html",
 			"retold-catalog.json",
 			"retold-keyword-index.json"

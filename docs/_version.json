@@ -1,7 +1,7 @@
 {
 	"Name": "pict-section-modal",
-	"Version": "1.1.2",
+	"Version": "1.1.4",
 	"Description": "Pict modal section -- confirmations, tooltips, toast notifications, floating modal windows, and viewport-managing layout shells with collapsible / resizable / overlay panels",
-	"GeneratedAt": "2026-05-23T01:48:36.474Z",
-	"GitCommit": "9af180c"
+	"GeneratedAt": "2026-05-26T18:24:28.441Z",
+	"GitCommit": "b271df9"
 }
