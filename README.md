@@ -1,5 +1,7 @@
 # Pict-Section-Modal
 
+> **[Read the Pict-Section-Modal Documentation](https://fable-retold.github.io/pict-section-modal/)**
+
 [pict-section-modal on npm](https://www.npmjs.com/package/pict-section-modal) | [MIT License](LICENSE)
 
 A modal dialog, confirmation, tooltip, toast notification, and **responsive layout shell** section view for the [Pict](https://github.com/fable-retold/pict) application framework. Drop in a single view to get promise-based confirmations, custom floating windows, auto-dismissing toasts, hover tooltips, and a panel-based application shell with built-in responsive behaviour -- all styled through CSS custom properties.
