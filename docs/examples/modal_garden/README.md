@@ -1,11 +1,11 @@
-# Modal Garden — The Full Feature Catalog
+# Modal Garden - The Full Feature Catalog
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/modal%5Fgarden/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/modal%5Fgarden/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 Modal Garden is the **interactive feature catalog** for
-`pict-section-modal` — every public API, every option, every variant, on
+`pict-section-modal` - every public API, every option, every variant, on
 one page. Click a button, see the modal; the code snippet that produced
 it is displayed beneath each card via `pict-section-code` read-only
 editors. Where [Bookstore](../bookstore/README.md) shows the patterns in
@@ -19,41 +19,41 @@ are not just prose.
 
 | Capability | Where you see it |
 |------------|------------------|
-| `confirm()` — promise-based single confirmation | "Confirmation" card |
-| `confirm({ dangerous: true })` — danger styling | "Dangerous confirm" card |
+| `confirm()` - promise-based single confirmation | "Confirmation" card |
+| `confirm({ dangerous: true })` - danger styling | "Dangerous confirm" card |
 | `doubleConfirm()` with `confirmPhrase` | "Double-confirm with typed phrase" card |
 | `doubleConfirm()` with two-click confirmation | "Double-confirm with two clicks" card |
-| `show()` — custom modal with HTML + buttons | "Custom modal" card |
-| `toast()` — four types: success / error / warning / info | "Toast types" card |
-| Toast `position` — six anchored positions | "Toast positions" card |
+| `show()` - custom modal with HTML + buttons | "Custom modal" card |
+| `toast()` - four types: success / error / warning / info | "Toast types" card |
+| Toast `position` - six anchored positions | "Toast positions" card |
 | Toast `duration: 0` (sticky) + `dismissible: false` (auto-only) | "Toast options" card |
-| `tooltip()` — simple text tooltip on hover | "Tooltips" card |
-| `richTooltip()` — interactive HTML tooltip | "Rich tooltips" card |
-| `dropdown()` — anchor-positioned menu under any element | "Dropdown nav" card |
+| `tooltip()` - simple text tooltip on hover | "Tooltips" card |
+| `richTooltip()` - interactive HTML tooltip | "Rich tooltips" card |
+| `dropdown()` - anchor-positioned menu under any element | "Dropdown nav" card |
 | `dropdown({ align: 'right' })` + headers / separators / disabled items | "Dropdown split" card |
-| `shell()` — full layout API with topbar / sidebar / center | "Shell anatomy" card |
+| `shell()` - full layout API with topbar / sidebar / center | "Shell anatomy" card |
 | Panel `Mode: 'fixed' \| 'collapsible' \| 'resizable'` | "Shell modes" card |
-| `ContentView` + `ContentDestinationId` — auto-render binding | "ContentView binding" card |
+| `ContentView` + `ContentDestinationId` - auto-render binding | "ContentView binding" card |
 | `OnExpand` / `OnCollapse` / `OnToggle` lifecycle hooks | "Shell hooks" card |
 | `PersistenceKey` + per-panel `Persist: false` | "Shell persistence" card |
 | `Position: 'overlay'` panel rendering | "Overlay panel" card |
-| `ResponsiveDrawer` — narrow-viewport drawer flip | "Responsive drawer" card |
+| `ResponsiveDrawer` - narrow-viewport drawer flip | "Responsive drawer" card |
 
 ## Key files
 
-- `source/Pict-Application-ModalGarden.js` — bootstrap. Registers
+- `source/Pict-Application-ModalGarden.js` - bootstrap. Registers
   `PictSectionModal` (the modal API), `ModalGardenLayout` (the page
-  scaffold), and ~20 `pict-section-code` read-only views — one per
+  scaffold), and ~20 `pict-section-code` read-only views - one per
   demo card.
-- `source/views/PictView-ModalGarden-Layout.js` — the page; renders the
+- `source/views/PictView-ModalGarden-Layout.js` - the page; renders the
   card grid and wires each "Show" button to a modal API call.
-- `_CodeSnippets` array — every card's verbatim source snippet, declared
+- `_CodeSnippets` array - every card's verbatim source snippet, declared
   once and registered as read-only `pict-section-code` views; what you
   see on screen is exactly what runs.
 
 ---
 
-## Feature 1 — Confirmation flow
+## Feature 1 - Confirmation flow
 
 The simplest modal primitive returns a promise:
 
@@ -76,7 +76,7 @@ let tmpResult = await tmpModal.confirm(
 
 The button restyles to danger; the rest of the API is identical.
 
-## Feature 2 — Double-confirm variants
+## Feature 2 - Double-confirm variants
 
 When a single confirm is too easy, `doubleConfirm` adds friction. Two
 flavors:
@@ -91,7 +91,7 @@ let tmpResult = await tmpModal.doubleConfirm(
 );
 ```
 
-**Two-click double-confirm.** No phrase — just an extra click. Useful
+**Two-click double-confirm.** No phrase - just an extra click. Useful
 for "less catastrophic but still serious" actions:
 
 ```js
@@ -101,7 +101,7 @@ let tmpResult = await tmpModal.doubleConfirm(
 );
 ```
 
-## Feature 3 — Custom modal with HTML + buttons
+## Feature 3 - Custom modal with HTML + buttons
 
 When the body content isn't a simple prompt and the buttons aren't
 "confirm/cancel", `show()` is the escape hatch. The result is the
@@ -125,7 +125,7 @@ let tmpButtonHash = await tmpModal.show({
 Three button styles: `''` (neutral), `'primary'` (theme accent), and
 `'danger'` (red, for destructive).
 
-## Feature 4 — Toasts: types, positions, durations
+## Feature 4 - Toasts: types, positions, durations
 
 Toasts are non-blocking. Four types pick up matching theme tokens:
 
@@ -136,7 +136,7 @@ tmpModal.toast('Please check your input.', { type: 'warning' });
 tmpModal.toast('New version available.',   { type: 'info'    });
 ```
 
-Position: top/bottom × left/center/right — six combinations:
+Position: top/bottom × left/center/right - six combinations:
 
 ```js
 tmpModal.toast('Message here', { position: 'top-right'     });
@@ -146,7 +146,7 @@ tmpModal.toast('Message here', { position: 'bottom-center' });
 Duration controls dismissal:
 
 ```js
-// Persistent — no auto-dismiss
+// Persistent - no auto-dismiss
 tmpModal.toast('Stays until dismissed.', { duration: 0 });
 
 // No dismiss button (auto-closes in 3s)
@@ -156,7 +156,7 @@ tmpModal.toast('Auto-close only.', { dismissible: false });
 tmpModal.dismissToasts();
 ```
 
-## Feature 5 — Tooltips and rich tooltips
+## Feature 5 - Tooltips and rich tooltips
 
 `tooltip()` is text on hover; `richTooltip()` accepts HTML and can be
 interactive:
@@ -175,9 +175,9 @@ let tmpRich = tmpModal.richTooltip(
 ```
 
 `interactive: true` keeps the tooltip open while the cursor is over its
-content — useful for tooltips that contain links.
+content - useful for tooltips that contain links.
 
-## Feature 6 — Dropdowns
+## Feature 6 - Dropdowns
 
 `dropdown()` anchors a menu under any element. The promise resolves with
 the chosen item, or `null` if the user dismissed:
@@ -215,9 +215,9 @@ tmpModal.dropdown(arrowBtnEl,
 });
 ```
 
-## Feature 7 — Shell anatomy
+## Feature 7 - Shell anatomy
 
-The shell is the application chrome — a viewport with optional docked
+The shell is the application chrome - a viewport with optional docked
 panels and a center. Set it up once, then add panels:
 
 ```js
@@ -235,14 +235,14 @@ Three panel modes:
 
 | Mode | Behaviour |
 |------|-----------|
-| `fixed` | No user interaction — chrome you can't toggle (topbar, statusbar) |
+| `fixed` | No user interaction - chrome you can't toggle (topbar, statusbar) |
 | `collapsible` | Inner-edge tab toggles between collapsed + expanded |
 | `resizable` | Inner-edge tab toggles AND user can drag the edge to resize |
 
-## Feature 8 — `ContentView` auto-render binding
+## Feature 8 - `ContentView` auto-render binding
 
 Bind a Pict view to a panel and the shell handles its render lifecycle
-automatically — at panel creation **and** on every expand transition:
+automatically - at panel creation **and** on every expand transition:
 
 ```js
 // 1. Register the view normally
@@ -258,10 +258,10 @@ tmpShell.addPanel({
 ```
 
 No manual `render()` bookkeeping. The "ContentView Binding" card in the
-running app uses this on a counter view — click to expand the panel and
+running app uses this on a counter view - click to expand the panel and
 watch the tick number increment.
 
-## Feature 9 — Lifecycle hooks
+## Feature 9 - Lifecycle hooks
 
 `OnExpand` / `OnCollapse` / `OnToggle` fire at the transition boundaries:
 
@@ -279,7 +279,7 @@ tmpShell.addPanel({
 Use `OnExpand` for lazy data fetching, `OnCollapse` for "save before
 losing context", and `OnToggle` for accessibility (announce state).
 
-## Feature 10 — Persistence
+## Feature 10 - Persistence
 
 Panel sizes + collapsed states persist to `localStorage` when the shell
 has a `PersistenceKey`. Opt individual panels out with `Persist: false`:
@@ -291,12 +291,12 @@ tmpShell.addPanel({
     Hash:    'sidebar',
     Side:    'left',
     Mode:    'resizable',
-    Size:    160,    // initial size — overridden by saved state on load
+    Size:    160,    // initial size - overridden by saved state on load
     Persist: true    // (default; set false to skip)
 });
 ```
 
-## Feature 11 — Overlay panels
+## Feature 11 - Overlay panels
 
 `Position: 'overlay'` renders the panel as a floating overlay rather
 than docking it in the side stack. The center never gets pinched:
@@ -312,7 +312,7 @@ tmpShell.addPanel({
 });
 ```
 
-## Feature 12 — Responsive drawer
+## Feature 12 - Responsive drawer
 
 `ResponsiveDrawer: <pixels>` flips a side panel into a top drawer when
 the viewport gets narrower than the threshold. Workspace gets the full
@@ -341,19 +341,19 @@ npm run build
 
 ## Things to try in the running app
 
-- **Cycle every modal type** — top of the page, one card per primitive.
-- **Compare double-confirm variants** — type the phrase vs. click twice.
-- **Stack toasts** — fire several quickly; they queue and dismiss in
+- **Cycle every modal type** - top of the page, one card per primitive.
+- **Compare double-confirm variants** - type the phrase vs. click twice.
+- **Stack toasts** - fire several quickly; they queue and dismiss in
   order.
-- **Drop down into a nav menu** — the dropdown card mimics a real nav
+- **Drop down into a nav menu** - the dropdown card mimics a real nav
   bar.
-- **Resize and toggle the live shell** — the shell-playground cards drive
+- **Resize and toggle the live shell** - the shell-playground cards drive
   real panel transitions. Watch the `ContentView` counter tick.
 
 ## Takeaways
 
 1. **One view, many primitives.** `PictSectionModal` exposes a flat API
-   surface — `confirm`, `doubleConfirm`, `show`, `toast`, `tooltip`,
+   surface - `confirm`, `doubleConfirm`, `show`, `toast`, `tooltip`,
    `richTooltip`, `dropdown`, `shell`. Each card here is a single API
    call.
 2. **Code shown = code run.** Every demo card's snippet is registered as
@@ -364,7 +364,7 @@ npm run build
    item/`null`). Linear control flow even for multi-step confirmations.
 4. **The shell is a separate layer of API.** Where the modal primitives
    are transient (open, resolve, close), the shell is persistent
-   chrome — panels stay until you remove them. They share theming and
+   chrome - panels stay until you remove them. They share theming and
    lifecycle conventions but their use cases are distinct.
 
 ## Related documentation
@@ -372,6 +372,6 @@ npm run build
 - [confirm](../../api/confirm.md), [doubleConfirm](../../api/doubleConfirm.md)
 - [show](../../api/show.md), [toast](../../api/toast.md)
 - [tooltip](../../api/tooltip.md), [richTooltip](../../api/richTooltip.md)
-- [Architecture](../../Architecture.md) — modal + shell design
-- [Implementation Reference](../../Implementation_Reference.md) — full API
-- [Theming](../../api/theming.md) — theme tokens
+- [Architecture](../../Architecture.md) - modal + shell design
+- [Implementation Reference](../../Implementation_Reference.md) - full API
+- [Theming](../../api/theming.md) - theme tokens

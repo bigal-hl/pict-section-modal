@@ -14,8 +14,8 @@
 <!-- docuserve:examples:start -->
 | Example | Complexity | Launch |
 |---------|------------|--------|
-| [Acme Widgets](examples/acme/README.md) | Advanced | [&#9654; Launch](examples/acme/index.html) |
-| [Bookstore](examples/bookstore/README.md) | Intermediate | [&#9654; Launch](examples/bookstore/index.html) |
-| [Modal Garden](examples/modal%5Fgarden/README.md) | Intermediate | [&#9654; Launch](examples/modal%5Fgarden/index.html) |
-| [Panel Garden](examples/panel%5Fgarden/README.md) | Advanced | [&#9654; Launch](examples/panel%5Fgarden/index.html) |
+| [Acme Widgets](examples/acme/README.md) | Advanced | [Launch](examples/acme/index.html) |
+| [Bookstore](examples/bookstore/README.md) | Intermediate | [Launch](examples/bookstore/index.html) |
+| [Modal Garden](examples/modal%5Fgarden/README.md) | Intermediate | [Launch](examples/modal%5Fgarden/index.html) |
+| [Panel Garden](examples/panel%5Fgarden/README.md) | Advanced | [Launch](examples/panel%5Fgarden/index.html) |
 <!-- docuserve:examples:end -->

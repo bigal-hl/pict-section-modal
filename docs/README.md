@@ -118,9 +118,9 @@ MIT
 ## Example Applications
 
 <!-- docuserve:examples:start -->
-*Live, runnable example applications — each opens in a new browser tab:*
+*Live, runnable example applications - each opens in a new browser tab:*
 
-- **[Acme Widgets](examples/acme/README.md)** — A branded multi-page app demonstrating the full shell + theme integration — custom brand, custom theme, responsive sidebar, gear menu, and bottom status bar. · [&#9654; Launch live app](examples/acme/index.html)
-- **[Bookstore](examples/bookstore/README.md)** — Practical modal usage in a data-driven inventory app — confirm on delete, double-confirm on bulk delete, custom modals for record details, toasts for feedback. · [&#9654; Launch live app](examples/bookstore/index.html)
-- **[Modal Garden](examples/modal%5Fgarden/README.md)** — Interactive feature catalog covering every pict-section-modal primitive: confirm, doubleConfirm, show, toast, tooltip, dropdown, plus the full shell + panels playground. · [&#9654; Launch live app](examples/modal%5Fgarden/index.html)
+- **[Acme Widgets](examples/acme/README.md)** - A branded multi-page app demonstrating the full shell + theme integration - custom brand, custom theme, responsive sidebar, gear menu, and bottom status bar. - [Launch live app](examples/acme/index.html)
+- **[Bookstore](examples/bookstore/README.md)** - Practical modal usage in a data-driven inventory app - confirm on delete, double-confirm on bulk delete, custom modals for record details, toasts for feedback. - [Launch live app](examples/bookstore/index.html)
+- **[Modal Garden](examples/modal%5Fgarden/README.md)** - Interactive feature catalog covering every pict-section-modal primitive: confirm, doubleConfirm, show, toast, tooltip, dropdown, plus the full shell + panels playground. - [Launch live app](examples/modal%5Fgarden/index.html)
 <!-- docuserve:examples:end -->

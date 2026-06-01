@@ -150,7 +150,7 @@ tmpTip.destroy();
 The shell is a viewport-filling layout container with addressable side
 panels (top / bottom / left / right) plus a center workspace. Panels
 can be **fixed**, **collapsible**, or **resizable**, each with their
-own collapse-tab UI, persisted state, and — crucially — **responsive
+own collapse-tab UI, persisted state, and - crucially - **responsive
 behaviour**: a side panel can flip to a top drawer at narrow viewports
 so the workspace gets full width instead of being pinched to nothing.
 
@@ -163,7 +163,7 @@ const tmpShell = tmpModal.shell(document.getElementById('App'), {
     PersistenceKey: 'my-app-layout'    // localStorage scope (optional)
 });
 
-// Topbar — fixed 56px, never collapses
+// Topbar - fixed 56px, never collapses
 tmpShell.addPanel({
     Hash: 'topbar',
     Side: 'top',
@@ -173,7 +173,7 @@ tmpShell.addPanel({
     ContentView: 'My-TopBar-View'      // shell auto-renders this Pict view
 });
 
-// Sidebar — resizable, responsive drawer at < 900px
+// Sidebar - resizable, responsive drawer at < 900px
 tmpShell.addPanel({
     Hash: 'sidebar',
     Side: 'left',
@@ -187,7 +187,7 @@ tmpShell.addPanel({
     ResponsiveDrawer: 900              // flip to top drawer below 900px
 });
 
-// Statusbar — fixed 32px at the bottom
+// Statusbar - fixed 32px at the bottom
 tmpShell.addPanel({
     Hash: 'statusbar',
     Side: 'bottom',
@@ -216,7 +216,7 @@ tmpShell.addPanel({
 | `Persist` | boolean | `true` | Persist Size/Collapsed to localStorage under the shell's `PersistenceKey` |
 | `ContentDestinationId` | string | none | `id` for the inner div hosts render into |
 | `ContentView` | string | none | A Pict view identifier the shell auto-renders into the destination at creation + on every expand |
-| `ResponsiveDrawer` | number (px) | `0` (off) | Below this viewport width, the panel re-parents into a top-drawer layout — see below |
+| `ResponsiveDrawer` | number (px) | `0` (off) | Below this viewport width, the panel re-parents into a top-drawer layout - see below |
 | `DrawerHeight` | string | `'33vh'` | CSS height of the drawer in responsive mode (CSS units: px / vh / %) |
 | `OnExpand` / `OnCollapse` / `OnToggle` | function | none | Lifecycle hooks |
 
@@ -224,7 +224,7 @@ tmpShell.addPanel({
 
 The pattern: a side panel pinches the center on desktop, but a narrow
 viewport (tablet portrait, docked window, half-screen split) can't
-afford that 200–300px sacrifice. Setting `ResponsiveDrawer: 900` (px)
+afford that 200-300px sacrifice. Setting `ResponsiveDrawer: 900` (px)
 tells the shell to flip the panel into a **top drawer** below that
 breakpoint:
 
@@ -241,20 +241,20 @@ breakpoint:
   content above so the tab reads as a labelled extension of the
   drawer rather than a detached UI element.
 - The drawer's chrome background is `background-clip: content-box`-ed
-  so the tab's surrounding strip is transparent — it reads as
+  so the tab's surrounding strip is transparent - it reads as
   belonging to the workspace, not as a separate drawer band.
-- Hover on the tab grows its **width only** (64 → 96px), so the
+- Hover on the tab grows its **width only** (64 -> 96px), so the
   hover affordance is visible but doesn't push into adjacent chrome.
 - Above the breakpoint the panel snaps back into the docked side
   stack. User collapse/expand state is preserved across the
   transition.
 
-`ResponsiveDrawer: 0` (the default) disables the behaviour — the panel
+`ResponsiveDrawer: 0` (the default) disables the behaviour - the panel
 stays docked at every viewport width.
 
 The breakpoint is enforced by a `matchMedia` listener with a
 `window.resize` fallback (matchMedia change events occasionally miss
-fast crossings on some browsers). State transitions are idempotent —
+fast crossings on some browsers). State transitions are idempotent -
 a re-fire of the same target state is a no-op.
 
 #### `Panel` instance API
@@ -281,7 +281,7 @@ a re-fire of the same target state is a no-op.
 | `shell.addPanel(config)` | Add a panel, returns the panel handle |
 | `shell.getPanel(hash)` | Look up a panel by hash, or null |
 | `shell.getPanels()` | Array of all panel handles |
-| `shell.openPanel(hash)` | Idempotent "show me" — equivalent to `getPanel(hash).popup()`, null-safe |
+| `shell.openPanel(hash)` | Idempotent "show me" - equivalent to `getPanel(hash).popup()`, null-safe |
 | `shell.center(opts)` | Configure the center workspace (optionally with a `ContentDestinationId`) |
 | `shell.getCenterEl()` | The center workspace element |
 

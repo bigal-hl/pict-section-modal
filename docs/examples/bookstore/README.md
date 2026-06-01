@@ -1,11 +1,11 @@
-# Bookstore — Modal Patterns in a Real Data-Driven App
+# Bookstore - Modal Patterns in a Real Data-Driven App
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/bookstore/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/bookstore/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 A bookstore inventory application that demonstrates **practical**
-`pict-section-modal` usage — every dialog primitive is wired to a real
+`pict-section-modal` usage - every dialog primitive is wired to a real
 action against actual application data. Where the [Modal Garden](../modal_garden/README.md)
 example is a feature catalog, Bookstore is the end-to-end story: confirm
 on delete, double-confirm on bulk delete, custom modal for record
@@ -29,15 +29,15 @@ modal from instance methods on the application class.
 
 ## Key files
 
-- `source/Pict-Application-Bookstore.js` — application class. Holds the
+- `source/Pict-Application-Bookstore.js` - application class. Holds the
   `Books` array in `AppData.Bookstore` and exposes
   `viewBookDetails`/`deleteBook`/`deleteAllBooks` as instance methods.
-- `source/views/PictView-Bookstore-Layout.js` — shell-style layout with a
+- `source/views/PictView-Bookstore-Layout.js` - shell-style layout with a
   top bar slot and a content slot.
-- `source/views/PictView-Bookstore-BookList.js` — table view that
+- `source/views/PictView-Bookstore-BookList.js` - table view that
   renders the books and calls back into the application methods.
-- `source/views/PictView-Bookstore-About.js` — alternate route content.
-- `source/providers/PictRouter-Bookstore-Configuration.json` — route map.
+- `source/views/PictView-Bookstore-About.js` - alternate route content.
+- `source/providers/PictRouter-Bookstore-Configuration.json` - route map.
 
 ## The data model
 
@@ -48,18 +48,18 @@ this.pict.AppData.Bookstore =
     [
         { ID: 1, Title: "One Hundred Years of Solitude", Author: "Gabriel Garcia Marquez",
           Year: 1967, Genre: "Magical Realism", InStock: true },
-        // 10 books total — mix of fiction, genre, year, in-stock state
+        // 10 books total - mix of fiction, genre, year, in-stock state
     ],
     NextID: 11
 };
 ```
 
-Plain JavaScript object on `AppData`. No service layer — the example is
+Plain JavaScript object on `AppData`. No service layer - the example is
 about modal patterns, not data access.
 
 ---
 
-## Feature 1 — `confirm()` returns a promise
+## Feature 1 - `confirm()` returns a promise
 
 The simplest modal primitive. Returns `true` on confirm, `false` on
 cancel; resolves regardless of how the user closes it. The book-list's
@@ -94,7 +94,7 @@ this.pict.views.PictSectionModal.confirm(
 `dangerous: true` styles the confirm button as a danger action (red).
 Without it, the button uses the neutral primary style.
 
-## Feature 2 — `doubleConfirm()` for irreversible actions
+## Feature 2 - `doubleConfirm()` for irreversible actions
 
 When the action wipes a lot of data, a single confirm is too easy to
 fat-finger. `doubleConfirm` requires the user to type a confirmation
@@ -114,9 +114,9 @@ this.pict.views.PictSectionModal.doubleConfirm(
 ```
 
 `{phrase}` in `phrasePrompt` is substituted with `confirmPhrase` at render
-time — change the phrase in one place and the prompt label follows.
+time - change the phrase in one place and the prompt label follows.
 
-## Feature 3 — Custom `show()` with HTML content + buttons
+## Feature 3 - Custom `show()` with HTML content + buttons
 
 For displaying record details or arbitrary content. The modal body is
 plain HTML, buttons are an array; the call resolves with the clicked
@@ -151,7 +151,7 @@ let tmpStockLabel = tmpBook.InStock
     : '<span style="color:var(--theme-color-status-error, #dc2626);font-weight:600;">Out of Stock</span>';
 ```
 
-## Feature 4 — Toast notifications signal outcomes
+## Feature 4 - Toast notifications signal outcomes
 
 Toasts are non-blocking feedback. The application emits one after every
 mutation so the user knows the action succeeded:
@@ -163,14 +163,14 @@ this.pict.views.PictSectionModal.toast(
 );
 ```
 
-Four built-in types — `success`, `error`, `warning`, `info`. Each picks
+Four built-in types - `success`, `error`, `warning`, `info`. Each picks
 up the matching theme token. Toasts stack and auto-dismiss; the user can
 also dismiss them with the close button.
 
-## Feature 5 — Reactive list refresh
+## Feature 5 - Reactive list refresh
 
 The book list view exposes a `refreshList()` method the application
-calls after every mutation. The view re-renders from `AppData` — same
+calls after every mutation. The view re-renders from `AppData` - same
 data, new DOM:
 
 ```js
@@ -180,7 +180,7 @@ if (this.pict.views['Bookstore-BookList'])
 }
 ```
 
-The view does **not** subscribe to `AppData` changes — the application
+The view does **not** subscribe to `AppData` changes - the application
 explicitly drives renders. That keeps the render flow obvious: data
 mutates first, then the application says "render". No magic.
 
@@ -195,35 +195,35 @@ npm run build
 
 ## Things to try in the running app
 
-- **View a book's details** — click the "View" button on any row; the
+- **View a book's details** - click the "View" button on any row; the
   custom modal opens with the formatted detail table.
-- **Delete a single book** — click "Delete"; a danger-styled confirm
+- **Delete a single book** - click "Delete"; a danger-styled confirm
   prompts; on confirm a success toast appears and the row vanishes.
-- **Delete all books** — click "Delete All"; the double-confirm requires
+- **Delete all books** - click "Delete All"; the double-confirm requires
   typing `DELETE ALL` before the button enables.
-- **Navigate** — top bar has Home / About links; routing is handled by
+- **Navigate** - top bar has Home / About links; routing is handled by
   `pict-router`.
-- **Trigger errors** — close all browser tabs of the example, then
+- **Trigger errors** - close all browser tabs of the example, then
   delete a book; toasts respect dark mode and brand colors automatically.
 
 ## Takeaways
 
 1. **One modal API, four use cases.** Confirm for reversible, doubleConfirm
-   for catastrophic, custom show for details, toast for outcomes — all
+   for catastrophic, custom show for details, toast for outcomes - all
    from the same `PictSectionModal` view.
 2. **Promises make modal flow linear.** No event listeners, no state
-   machine — just `await modal.confirm(...)` (or `.then()`) and branch on
+   machine - just `await modal.confirm(...)` (or `.then()`) and branch on
    the result.
 3. **Style hooks are theme tokens.** `--theme-color-status-success`,
-   `dangerous: true`, `Style: 'primary'` — none of these are hard-coded
+   `dangerous: true`, `Style: 'primary'` - none of these are hard-coded
    colors. The modal looks correct in every theme automatically.
 4. **Render after mutate.** Reactivity here is one explicit
    `refreshList()` call after each data change, not subscription magic.
 
 ## Related documentation
 
-- [confirm](../../api/confirm.md) — single confirmation prompt
-- [doubleConfirm](../../api/doubleConfirm.md) — phrase + click double-check
-- [show](../../api/show.md) — custom modal with content + buttons
-- [toast](../../api/toast.md) — non-blocking notification
-- [Architecture](../../Architecture.md) — overall design
+- [confirm](../../api/confirm.md) - single confirmation prompt
+- [doubleConfirm](../../api/doubleConfirm.md) - phrase + click double-check
+- [show](../../api/show.md) - custom modal with content + buttons
+- [toast](../../api/toast.md) - non-blocking notification
+- [Architecture](../../Architecture.md) - overall design
